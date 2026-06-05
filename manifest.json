@@ -1,0 +1,17 @@
+{
+  "name": "YellowWave",
+  "description": "A neon-yellow glassmorphism Spicetify theme with floating panels, editorial highlighter accents, and premium dark UI.",
+  "preview": "assets/preview.png",
+  "readme": "README.md",
+  "usercss": "user.css",
+  "schemes": "color.ini",
+  "include": ["theme.js"],
+  "authors": [
+    {
+      "name": "Rehaan Ajani",
+      "url": "https://github.com/YOUR_GITHUB_USERNAME"
+    }
+  ],
+  "tags": ["glassmorphism", "yellow", "dark", "rounded", "spicetify"],
+  "todo": "Replace YOUR_GITHUB_USERNAME before marketplace submission."
+}

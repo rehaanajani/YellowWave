@@ -1,0 +1,25 @@
+# Dependencies and generated folders
+node_modules/
+dist/
+build/
+
+# Local app and OS data
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Spicetify local state should stay outside this theme repo
+Backup/
+Extracted/
+prefs
+config-xpui.ini
