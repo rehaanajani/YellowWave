@@ -24,7 +24,6 @@
 
 ## v1 Marketplace Release
 
-- Replace placeholder GitHub username in `manifest.json`.
 - Add `assets/preview.png`.
 - Test install script and manual installation on a clean Spicetify setup.
 - Review selectors against current Spotify desktop.
