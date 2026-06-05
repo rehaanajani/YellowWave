@@ -13,6 +13,7 @@ TODO: Replace `assets/preview.png` with a real YellowWave screenshot before rele
 - Neon yellow accent system replacing Spotify green.
 - Dark graphite and black UI foundation.
 - Glassmorphism panels with controlled blur and fallbacks.
+- Album-art blurred background layer with safe Spicetify player enhancement.
 - Floating rounded player bar with yellow progress styling.
 - Rounded cards with subtle hover lift and yellow glow.
 - Editorial highlighter-label accents for small labels and active states.

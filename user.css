@@ -1,72 +1,121 @@
 /*
- * YellowWave v0.2
- * Original CSS-first Spicetify theme.
- * The selectors below favor broad Spotify/Spicetify surface roles first, with
- * a few marked fallback selectors for Spotify desktop builds that rename UI.
+ * YellowWave v0.3
+ * Original neon-yellow glassmorphism Spicetify theme.
+ * Fragile Spotify selectors are marked where they target desktop internals.
  */
 
 :root {
   --yw-yellow: #F1FC49;
   --yw-yellow-bright: #F2FE47;
   --yw-yellow-dark: #DDE835;
-  --yw-bg: #0B0D0E;
-  --yw-surface: rgba(18, 20, 21, 0.92);
-  --yw-glass: rgba(22, 25, 26, 0.58);
-  --yw-glass-heavy: rgba(12, 14, 15, 0.78);
-  --yw-border: rgba(241, 252, 73, 0.22);
-  --yw-border-strong: rgba(241, 252, 73, 0.4);
+  --yw-bg: #070809;
+  --yw-glass: rgba(16, 18, 19, 0.42);
+  --yw-glass-soft: rgba(255, 255, 255, 0.052);
+  --yw-glass-heavy: rgba(10, 12, 13, 0.62);
+  --yw-border: rgba(241, 252, 73, 0.14);
+  --yw-border-soft: rgba(255, 255, 255, 0.095);
   --yw-glow: rgba(241, 252, 73, 0.45);
-  --yw-shadow-soft: 0 18px 46px rgba(0, 0, 0, 0.42);
-  --yw-shadow-glow: 0 0 28px rgba(241, 252, 73, 0.16);
+  --yw-glass-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.18),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.18),
+    0 12px 32px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(241, 252, 73, 0.08);
   --yw-radius-sm: 8px;
-  --yw-radius-md: 12px;
-  --yw-radius-lg: 18px;
-  --yw-radius-xl: 22px;
+  --yw-radius-md: 14px;
+  --yw-radius-lg: 20px;
+  --yw-radius-xl: 28px;
 
+  --spice-main: transparent;
+  --spice-sidebar: transparent;
+  --spice-player: transparent;
+  --spice-card: rgba(255, 255, 255, 0.06);
   --spice-button: var(--yw-yellow);
   --spice-button-active: var(--yw-yellow-bright);
-  --spice-selected-row: rgba(241, 252, 73, 0.14);
+  --spice-selected-row: rgba(241, 252, 73, 0.1);
   --spice-tab-active: var(--yw-yellow);
-  --spice-main: var(--yw-bg);
-  --spice-sidebar: #08090A;
-  --spice-player: #101213;
-  --spice-card: rgba(23, 26, 27, 0.74);
 }
 
-/* 1. Global polish */
+/* 1. Background architecture */
 html,
 body,
 #main,
-.Root__main-view {
-  background:
-    radial-gradient(circle at 18% 12%, rgba(241, 252, 73, 0.16), transparent 28rem),
-    radial-gradient(circle at 82% 4%, rgba(242, 254, 71, 0.08), transparent 24rem),
-    var(--yw-bg) !important;
+.Root,
+.Root__top-container,
+.Root__main-view,
+.main-view-container,
+.main-view-container__scroll-node {
+  background: transparent !important;
+}
+
+body {
+  background: var(--yw-bg) !important;
   color: var(--spice-text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--yw-yellow-dark) rgba(255, 255, 255, 0.06);
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(241, 252, 73, 0.2), transparent 24rem),
+    radial-gradient(circle at 82% 18%, rgba(242, 254, 71, 0.095), transparent 22rem),
+    linear-gradient(180deg, rgba(7, 8, 9, 0.68), rgba(7, 8, 9, 0.92));
 }
 
-/* Keep transitions scoped to interactive UI. A global `*` transition repaints too much of Spotify. */
-:where(button, a, [role="button"], [role="tab"], [role="menuitem"], input, textarea, select),
+.yellowwave-bg-layer {
+  position: fixed;
+  inset: -40px;
+  z-index: 0;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  filter: blur(44px) brightness(38%) saturate(1.25);
+  opacity: 0.42;
+  transform: scale(1.08);
+  transition: background-image 500ms ease, opacity 400ms ease;
+}
+
+.yellowwave-bg-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 88%, rgba(241, 252, 73, 0.13), transparent 28rem),
+    rgba(7, 8, 9, 0.52);
+}
+
+.yellowwave-ready .Root {
+  isolation: isolate;
+}
+
+.Root__top-container,
+.Root__nav-bar,
+.Root__main-view,
+.Root__now-playing-bar,
+.main-nowPlayingView-nowPlayingWidget {
+  position: relative;
+  z-index: 1;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--yw-yellow-dark) rgba(255, 255, 255, 0.055);
+}
+
+/* No global transition: keep repaints scoped to interactive and glass surfaces. */
+:where(button, a, [role="button"], [role="menuitem"], input, textarea, select),
 :where(.main-card-card, .main-card-card button, .main-trackList-row, .main-trackList-trackListRow, .main-contextMenu-menuItemButton, .main-dropDown-dropDownItem) {
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
     box-shadow 160ms ease,
     color 160ms ease,
+    opacity 160ms ease,
     transform 160ms ease;
-}
-
-button,
-a,
-[role="button"] {
-  border-radius: var(--yw-radius-md);
 }
 
 button:focus-visible,
@@ -78,151 +127,145 @@ a:focus-visible,
   box-shadow: 0 0 0 6px rgba(241, 252, 73, 0.12);
 }
 
-/* 2. Main layout */
-.Root,
-.Root__top-container {
-  background: transparent !important;
-}
-
-.Root__main-view,
-.main-view-container,
-.main-view-container__scroll-node {
-  background: transparent !important;
-}
-
+/* 2. Scoped glass panels. Heavy blur is intentionally limited to these surfaces. */
 .main-view-container__scroll-node > div,
 .main-view-container__scroll-node-child,
-main[tabindex="-1"] {
+main[tabindex="-1"],
+.main-yourLibraryX-library,
+.main-shelf-shelf,
+.main-trackList-trackList,
+.main-nowPlayingView-nowPlayingWidget,
+.main-buddyFeed-content,
+.main-contextMenu-menu,
+.main-dropDown-dropDown,
+.main-connectBar-connectBar {
   background:
-    linear-gradient(180deg, rgba(241, 252, 73, 0.045), transparent 14rem),
-    linear-gradient(180deg, rgba(20, 23, 24, 0.76), rgba(10, 12, 13, 0.92)) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.072), rgba(255, 255, 255, 0.028)),
+    var(--yw-glass) !important;
+  border: 1px solid var(--yw-border-soft);
   border-radius: var(--yw-radius-lg);
+  box-shadow: var(--yw-glass-shadow);
 }
 
-/* Sidebar and library selectors are Spotify desktop internals and can change between client builds. */
+@supports ((backdrop-filter: blur(22px)) or (-webkit-backdrop-filter: blur(22px))) {
+  .main-view-container__scroll-node > div,
+  .main-view-container__scroll-node-child,
+  main[tabindex="-1"],
+  .main-yourLibraryX-library,
+  .main-card-card,
+  .main-shelf-shelf,
+  .main-trackList-trackList,
+  .main-nowPlayingView-nowPlayingWidget,
+  .main-buddyFeed-content,
+  .Root__now-playing-bar,
+  .main-contextMenu-menu,
+  .main-dropDown-dropDown {
+    -webkit-backdrop-filter: blur(22px) saturate(145%);
+    backdrop-filter: blur(22px) saturate(145%);
+  }
+}
+
+@supports not ((backdrop-filter: blur(22px)) or (-webkit-backdrop-filter: blur(22px))) {
+  .main-view-container__scroll-node > div,
+  .main-view-container__scroll-node-child,
+  main[tabindex="-1"],
+  .main-yourLibraryX-library,
+  .main-card-card,
+  .main-shelf-shelf,
+  .main-trackList-trackList,
+  .main-nowPlayingView-nowPlayingWidget,
+  .main-buddyFeed-content,
+  .Root__now-playing-bar {
+    background: rgba(13, 15, 16, 0.88) !important;
+  }
+}
+
+/* 3. Sidebar. Spotify library selectors are fragile desktop internals. */
 .Root__nav-bar,
 nav[aria-label="Main"],
 .main-yourLibraryX-navItems,
 .main-yourLibraryX-libraryContainer {
   background:
-    linear-gradient(180deg, rgba(241, 252, 73, 0.06), transparent 10rem),
-    var(--yw-glass-heavy) !important;
-  border: 1px solid rgba(241, 252, 73, 0.16);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.062), rgba(255, 255, 255, 0.018)),
+    rgba(8, 10, 11, 0.5) !important;
+  border: 1px solid rgba(241, 252, 73, 0.12);
   border-radius: var(--yw-radius-lg);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  box-shadow: var(--yw-glass-shadow);
+}
+
+@supports ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+  .Root__nav-bar,
+  nav[aria-label="Main"],
+  .main-yourLibraryX-navItems,
+  .main-yourLibraryX-libraryContainer {
+    -webkit-backdrop-filter: blur(20px) saturate(135%);
+    backdrop-filter: blur(20px) saturate(135%);
+  }
 }
 
 .Root__nav-bar a,
 nav[aria-label="Main"] a,
 .main-yourLibraryX-navItems a {
   color: var(--spice-subtext) !important;
+  border-radius: var(--yw-radius-md);
 }
 
 .Root__nav-bar a:hover,
 nav[aria-label="Main"] a:hover,
 .main-yourLibraryX-navItems a:hover {
-  color: var(--yw-yellow-bright) !important;
-  background: rgba(241, 252, 73, 0.1) !important;
-  box-shadow: inset 0 0 0 1px rgba(241, 252, 73, 0.14);
+  color: var(--yw-yellow) !important;
+  background: rgba(255, 255, 255, 0.055) !important;
 }
 
 .Root__nav-bar a[aria-current="page"],
 nav[aria-label="Main"] a[aria-current="page"],
 .main-yourLibraryX-navItems a[aria-current="page"] {
   color: var(--yw-yellow) !important;
-  background: linear-gradient(90deg, rgba(241, 252, 73, 0.22), rgba(241, 252, 73, 0.05)) !important;
-  box-shadow:
-    inset 3px 0 0 var(--yw-yellow),
-    0 0 18px rgba(241, 252, 73, 0.09);
+  background: rgba(255, 255, 255, 0.052) !important;
+  box-shadow: inset 3px 0 0 var(--yw-yellow);
 }
 
-/* Top bar selectors are fragile Spotify internals. Keep these rules decorative only. */
+/* 4. Top bar. Class names here are fragile Spotify internals. */
 .main-topBar-background,
 .main-topBar-container,
 .main-topBar-overlay,
 .main-topBar-topbarContent,
 .main-topBar-topbarContentWrapper {
-  background: linear-gradient(180deg, rgba(8, 9, 10, 0.82), rgba(8, 9, 10, 0.48)) !important;
-}
-
-.main-topBar-container {
-  border-bottom: 1px solid rgba(241, 252, 73, 0.12);
+  background: transparent !important;
 }
 
 .main-topBar-button,
 .main-topBar-historyButtons button,
 .main-userWidget-box {
-  background: rgba(255, 255, 255, 0.055) !important;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.058) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px !important;
   color: var(--spice-text) !important;
+  box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.12);
 }
 
 .main-topBar-button:hover,
 .main-topBar-historyButtons button:hover,
 .main-userWidget-box:hover {
-  border-color: var(--yw-border-strong);
+  border-color: rgba(241, 252, 73, 0.28);
   color: var(--yw-yellow) !important;
-  box-shadow: 0 0 18px rgba(241, 252, 73, 0.14);
+  box-shadow: 0 0 18px rgba(241, 252, 73, 0.12);
 }
 
-/* 3. Glass panels. Heavy section: backdrop-filter is scoped to panels only. */
-.main-yourLibraryX-library,
-.main-card-card,
-.main-shelf-shelf,
-.main-trackList-trackList,
-.main-actionBarBackground-background,
-.main-topBar-background,
-.main-nowPlayingView-nowPlayingWidget,
-.main-buddyFeed-content {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.022)),
-    var(--yw-glass) !important;
-  border: 1px solid rgba(255, 255, 255, 0.075);
-  border-radius: var(--yw-radius-lg);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
-}
-
-@supports ((backdrop-filter: blur(18px)) or (-webkit-backdrop-filter: blur(18px))) {
-  .main-yourLibraryX-library,
-  .main-card-card,
-  .main-shelf-shelf,
-  .main-trackList-trackList,
-  .main-nowPlayingView-nowPlayingWidget,
-  .main-buddyFeed-content,
-  .Root__now-playing-bar {
-    -webkit-backdrop-filter: blur(18px) saturate(130%);
-    backdrop-filter: blur(18px) saturate(130%);
-  }
-}
-
-@supports not ((backdrop-filter: blur(18px)) or (-webkit-backdrop-filter: blur(18px))) {
-  .main-yourLibraryX-library,
-  .main-card-card,
-  .main-shelf-shelf,
-  .main-trackList-trackList,
-  .main-nowPlayingView-nowPlayingWidget,
-  .main-buddyFeed-content,
-  .Root__now-playing-bar {
-    background: rgba(16, 18, 19, 0.96) !important;
-  }
-}
-
-/* 4. Player bar */
+/* 5. Floating centered player dock. Spotify player selectors are fragile. */
 .Root__now-playing-bar {
   position: relative;
   z-index: 4;
-  width: calc(100% - 28px);
-  margin: 0 auto 12px;
-  min-height: 82px;
+  width: min(72%, 1180px);
+  min-width: min(760px, calc(100vw - 28px));
+  min-height: 84px;
+  margin: 0 auto 14px;
   background:
-    linear-gradient(90deg, rgba(241, 252, 73, 0.11), transparent 16rem),
-    linear-gradient(180deg, rgba(26, 29, 30, 0.88), rgba(8, 9, 10, 0.9)) !important;
-  border: 1px solid var(--yw-border-strong);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.026)),
+    rgba(8, 10, 11, 0.48) !important;
+  border: 1px solid rgba(241, 252, 73, 0.18);
   border-radius: var(--yw-radius-xl);
-  box-shadow:
-    var(--yw-shadow-soft),
-    var(--yw-shadow-glow);
+  box-shadow: var(--yw-glass-shadow);
   overflow: hidden;
 }
 
@@ -232,7 +275,7 @@ nav[aria-label="Main"] a[aria-current="page"],
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, rgba(241, 252, 73, 0.075), transparent 34%);
 }
 
 .main-nowPlayingBar-left,
@@ -245,40 +288,39 @@ nav[aria-label="Main"] a[aria-current="page"],
   border-radius: var(--yw-radius-md);
 }
 
-.main-trackInfo-name a,
-.main-trackInfo-artists a {
-  text-decoration-color: rgba(241, 252, 73, 0.44);
-}
-
-.main-trackInfo-name a:hover,
-.main-trackInfo-artists a:hover {
-  color: var(--yw-yellow) !important;
-}
-
 .playback-bar__progress-time,
 .playback-bar__progress-time-elapsed {
-  color: var(--yw-yellow-dark) !important;
+  color: rgba(241, 252, 73, 0.78) !important;
 }
 
 .progress-bar,
 .playback-bar {
   --fg-color: var(--yw-yellow) !important;
   --is-active-fg-color: var(--yw-yellow-bright) !important;
-  --bg-color: rgba(255, 255, 255, 0.12) !important;
+  --bg-color: rgba(255, 255, 255, 0.14) !important;
 }
 
 .progress-bar__fg,
 .progress-bar__slider {
   background-color: var(--yw-yellow) !important;
-  box-shadow: 0 0 16px rgba(241, 252, 73, 0.34);
+  box-shadow: 0 0 16px rgba(241, 252, 73, 0.3);
 }
 
 .main-playButton-PlayButton,
 .main-playPauseButton-button,
 button[data-testid="control-button-playpause"] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 42px !important;
+  min-width: 42px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
   background: var(--yw-yellow) !important;
-  color: #08090A !important;
-  box-shadow: 0 0 22px rgba(241, 252, 73, 0.38);
+  color: #050606 !important;
+  box-shadow: 0 0 20px rgba(241, 252, 73, 0.26);
 }
 
 .main-playButton-PlayButton:hover,
@@ -298,34 +340,34 @@ button[data-testid="control-button-playpause"]:hover {
 .player-controls__buttons button[aria-checked="true"],
 .main-nowPlayingBar-extraControls button[aria-checked="true"] {
   color: var(--yw-yellow) !important;
-  filter: drop-shadow(0 0 8px rgba(241, 252, 73, 0.34));
+  filter: drop-shadow(0 0 8px rgba(241, 252, 73, 0.3));
 }
 
-/* 5. Cards */
+/* 6. Cards and home shortcuts. Card classes are fragile Spotify internals. */
 .main-card-card,
-.main-entityHeader-container,
-.main-shelf-shelf > div,
-.main-gridContainer-gridContainer > div {
+.main-gridContainer-gridContainer > div,
+.main-shelf-shelf > div {
   border-radius: var(--yw-radius-lg) !important;
 }
 
 .main-card-card {
-  background:
-    linear-gradient(180deg, rgba(241, 252, 73, 0.035), transparent 46%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.058), rgba(255, 255, 255, 0.024)) !important;
-  border: 1px solid rgba(255, 255, 255, 0.065);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.072), rgba(255, 255, 255, 0.024)),
+    rgba(10, 12, 13, 0.34) !important;
+  border: 1px solid rgba(255, 255, 255, 0.088);
+  box-shadow: var(--yw-glass-shadow);
 }
 
 .main-card-card:hover,
 .main-gridContainer-gridContainer > div:hover {
-  border-color: var(--yw-border-strong);
+  border-color: rgba(241, 252, 73, 0.22);
   box-shadow:
-    0 16px 38px rgba(0, 0, 0, 0.34),
-    0 0 28px rgba(241, 252, 73, 0.2);
-  transform: translateY(-2px);
+    inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+    0 16px 38px rgba(0, 0, 0, 0.38),
+    0 0 22px rgba(241, 252, 73, 0.12);
+  transform: translateY(-3px);
 }
 
 .main-card-card:hover .main-cardHeader-link,
@@ -333,7 +375,7 @@ button[data-testid="control-button-playpause"]:hover {
   color: var(--yw-yellow-bright) !important;
 }
 
-/* Card play buttons use Spotify internals. Keep this narrow to card overlays to avoid square yellow blocks. */
+/* Card play buttons: intentionally narrow so playlist cards never become yellow blocks. */
 .main-card-card .main-playButton-PlayButton,
 .main-card-card .main-playPauseButton-button,
 .main-card-card button[data-testid="play-button"],
@@ -344,12 +386,12 @@ button[data-testid="control-button-playpause"]:hover {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  width: 44px !important;
-  min-width: 44px !important;
-  max-width: 44px !important;
-  height: 44px !important;
-  min-height: 44px !important;
-  max-height: 44px !important;
+  width: 42px !important;
+  min-width: 42px !important;
+  max-width: 42px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
   padding: 0 !important;
   aspect-ratio: 1 / 1;
   border: 0 !important;
@@ -358,10 +400,10 @@ button[data-testid="control-button-playpause"]:hover {
   color: #050606 !important;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px) scale(0.96);
+  transform: translateY(7px) scale(0.96);
   box-shadow:
     0 12px 28px rgba(0, 0, 0, 0.34),
-    0 0 24px rgba(241, 252, 73, 0.28);
+    0 0 20px rgba(241, 252, 73, 0.24);
 }
 
 .main-card-card:hover .main-playButton-PlayButton,
@@ -382,32 +424,35 @@ button[data-testid="control-button-playpause"]:hover {
 .main-card-card button[data-testid="play-button"]:hover,
 .main-card-card button[aria-label*="Play"]:hover {
   background: var(--yw-yellow-bright) !important;
-  transform: translateY(0) scale(1.06);
+  transform: translateY(0) scale(1.05);
 }
 
 .main-card-card .main-playButton-PlayButton svg,
 .main-card-card .main-playPauseButton-button svg,
 .main-card-card button[data-testid="play-button"] svg,
 .main-card-card button[aria-label*="Play"] svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .main-cardImage-imageWrapper,
 .main-cardImage-imageWrapper img,
 .main-entityHeader-image,
-.main-entityHeader-image img {
+.main-entityHeader-image img,
+.cover-art-image,
+img[data-testid="cover-art-image"] {
   border-radius: var(--yw-radius-md) !important;
+  filter: saturate(0.96) contrast(1.03);
 }
 
-/* 6. Playlist and album styling */
-/* Entity header selectors are fragile Spotify internals. These are visual accents only. */
+/* 7. Playlist, album, and track surfaces. Entity header classes are fragile. */
 .main-entityHeader-container {
   background:
-    radial-gradient(circle at 12% 12%, rgba(241, 252, 73, 0.18), transparent 22rem),
-    linear-gradient(135deg, rgba(20, 23, 24, 0.78), rgba(8, 9, 10, 0.92)) !important;
-  border: 1px solid rgba(241, 252, 73, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.076), rgba(255, 255, 255, 0.018)),
+    rgba(8, 10, 11, 0.38) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--yw-radius-lg);
+  box-shadow: var(--yw-glass-shadow);
 }
 
 .main-entityHeader-title,
@@ -418,118 +463,111 @@ button[data-testid="control-button-playpause"]:hover {
   text-shadow: 0 0 22px rgba(241, 252, 73, 0.08);
 }
 
-.main-entityHeader-title span,
-.main-entityHeader-overline,
-.main-entityHeader-subtitle a,
-.main-shelf-title,
-.main-type-mestoBold {
-  text-decoration-color: rgba(241, 252, 73, 0.5);
-}
-
-.main-entityHeader-overline,
 .main-entityHeader-creator,
-.main-shelf-subHeader {
-  color: var(--yw-yellow-dark) !important;
-  text-transform: uppercase;
-  letter-spacing: 0;
+.main-shelf-subHeader,
+.main-trackInfo-name a:hover,
+.main-trackInfo-artists a:hover,
+.main-trackList-playingIcon,
+.main-trackList-rowMarker,
+.main-trackList-rowSectionVariable a:hover {
+  color: var(--yw-yellow) !important;
 }
 
-/* Button class names from Spotify can churn; data-testid selectors are preferred fallbacks. */
+/* Highlighter labels only: never attach this to broad selected states or cards. */
+.main-entityHeader-overline,
+.main-tag-container,
+.main-topBar-topbarContentWrapper [role="tab"][aria-selected="true"] {
+  display: inline-block;
+  width: fit-content;
+  max-width: max-content;
+  background: var(--yw-yellow) !important;
+  color: #050606 !important;
+  border-radius: var(--yw-radius-sm);
+  padding: 0.16em 0.52em;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  box-shadow: 0 0 18px rgba(241, 252, 73, 0.2);
+}
+
+/* Remove broad yellow actions. Playlist play buttons stay round, not block-like. */
 .main-actionBar-ActionBar button,
 .main-playlistEditDetailsModal-saveButton,
 .Button-sc-qlcn5g-0,
-button[data-testid="playlist-play-button"],
-button[data-testid="play-button"] {
+button[data-testid="playlist-play-button"] {
   border-radius: 999px !important;
 }
 
 .main-actionBar-ActionBar button[aria-label*="Play"],
-button[data-testid="playlist-play-button"],
-button[data-testid="play-button"] {
+button[data-testid="playlist-play-button"] {
   background: var(--yw-yellow) !important;
   color: #050606 !important;
-  box-shadow: 0 0 26px rgba(241, 252, 73, 0.28);
+  box-shadow: 0 0 22px rgba(241, 252, 73, 0.22);
 }
 
 .main-trackList-row:hover,
 .main-trackList-trackListRow:hover,
-[role="row"]:hover {
-  background: linear-gradient(90deg, rgba(241, 252, 73, 0.12), rgba(241, 252, 73, 0.035)) !important;
-  box-shadow:
-    inset 3px 0 0 rgba(241, 252, 73, 0.78),
-    inset 0 0 0 1px rgba(241, 252, 73, 0.08);
+.main-trackList-trackList [role="row"]:hover {
+  background: rgba(255, 255, 255, 0.055) !important;
+  box-shadow: inset 3px 0 0 rgba(241, 252, 73, 0.76);
 }
 
 .main-trackList-selected,
 .main-trackList-row[aria-selected="true"],
 .main-trackList-trackListRow[aria-selected="true"],
 .main-trackList-trackList [role="row"][aria-selected="true"] {
-  background: rgba(241, 252, 73, 0.16) !important;
+  background: rgba(241, 252, 73, 0.08) !important;
+  box-shadow: inset 3px 0 0 rgba(241, 252, 73, 0.78);
 }
 
-.main-trackList-playingIcon,
-.main-trackList-rowTitle,
-.main-trackList-rowMarker,
-.main-trackList-rowSectionVariable a:hover {
+/* 8. Right panel / now playing */
+.main-nowPlayingView-nowPlayingWidget,
+.main-buddyFeed-content {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.062), rgba(255, 255, 255, 0.018)),
+    rgba(8, 10, 11, 0.42) !important;
+  border: 1px solid rgba(241, 252, 73, 0.1);
+  border-radius: var(--yw-radius-lg);
+}
+
+.main-nowPlayingView-coverArt img,
+.main-nowPlayingView-contextItemInfo img {
+  border-radius: var(--yw-radius-md) !important;
+  filter: none;
+}
+
+/* 9. Menus and scrollbars */
+.main-contextMenu-menu,
+.main-dropDown-dropDown,
+.main-topBar-overlay,
+.main-connectBar-connectBar {
+  background: rgba(9, 11, 12, 0.76) !important;
+  border: 1px solid rgba(241, 252, 73, 0.14);
+  border-radius: var(--yw-radius-md) !important;
+  box-shadow: var(--yw-glass-shadow);
+}
+
+.main-contextMenu-menuItemButton:hover,
+.main-dropDown-dropDownItem:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
   color: var(--yw-yellow) !important;
 }
 
-/* Highlighter-label aesthetic for Daily Mix-style badges, tabs, chips, and playlist overlines. */
-.main-entityHeader-overline,
-.main-tag-container,
-.main-topBar-topbarContentWrapper [role="tab"][aria-selected="true"] {
-  background: var(--yw-yellow) !important;
-  color: #050606 !important;
-  border-radius: var(--yw-radius-sm);
-  padding: 0.16em 0.52em;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  font-weight: 800;
-  line-height: 1.25;
-  box-shadow:
-    0 0 0 1px rgba(5, 6, 6, 0.16),
-    0 0 22px rgba(241, 252, 73, 0.2);
-}
-
-.main-gridContainer-gridContainer .main-card-card::after,
-.main-card-card::after {
-  content: "";
-  display: block;
-  height: 3px;
-  width: 46%;
-  margin: 10px 0 0;
-  background: var(--yw-yellow);
-  border-radius: 999px;
-  opacity: 0;
-  box-shadow: 0 0 18px rgba(241, 252, 73, 0.35);
-}
-
-.main-card-card:hover::after {
-  opacity: 1;
-}
-
-/* Keep album art faithful by default. Apply only a light editorial contrast. */
-.main-cardImage-imageWrapper img,
-.main-entityHeader-image img,
-.cover-art-image,
-img[data-testid="cover-art-image"] {
-  filter: saturate(0.92) contrast(1.04);
-}
-
-/* 7. Scrollbar */
 ::-webkit-scrollbar {
   width: 12px;
   height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.035);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--yw-yellow-bright), var(--yw-yellow-dark));
-  border: 3px solid rgba(8, 9, 10, 0.9);
+  background: linear-gradient(180deg, rgba(242, 254, 71, 0.9), rgba(221, 232, 53, 0.78));
+  border: 3px solid rgba(8, 9, 10, 0.86);
   border-radius: 999px;
 }
 
@@ -537,31 +575,17 @@ img[data-testid="cover-art-image"] {
   background: var(--yw-yellow-bright);
 }
 
-/* 8. Marketplace and menu surfaces */
-.main-contextMenu-menu,
-.main-dropDown-dropDown,
-.main-userWidget-box,
-.main-topBar-overlay,
-.main-connectBar-connectBar {
-  background: rgba(12, 14, 15, 0.94) !important;
-  border: 1px solid var(--yw-border);
-  border-radius: var(--yw-radius-md) !important;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
-}
-
-.main-contextMenu-menuItemButton:hover,
-.main-dropDown-dropDownItem:hover {
-  background: rgba(241, 252, 73, 0.12) !important;
-  color: var(--yw-yellow) !important;
-}
-
-.yellowwave-ready .Root__now-playing-bar {
-  border-color: rgba(241, 252, 73, 0.48);
+@media (max-width: 980px) {
+  .Root__now-playing-bar {
+    width: calc(100% - 24px);
+    min-width: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(button, a, [role="button"], [role="tab"], [role="menuitem"], input, textarea, select),
-  :where(.main-card-card, .main-card-card button, .main-trackList-row, .main-trackList-trackListRow, .main-contextMenu-menuItemButton, .main-dropDown-dropDownItem) {
+  :where(button, a, [role="button"], [role="menuitem"], input, textarea, select),
+  :where(.main-card-card, .main-card-card button, .main-trackList-row, .main-trackList-trackListRow, .main-contextMenu-menuItemButton, .main-dropDown-dropDownItem),
+  .yellowwave-bg-layer {
     animation-duration: 1ms !important;
     scroll-behavior: auto !important;
     transition-duration: 1ms !important;
