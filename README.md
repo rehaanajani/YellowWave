@@ -6,6 +6,8 @@ YellowWave is a neon-yellow glassmorphism theme for Spotify desktop through Spic
 
 > Preview image coming soon. See `assets/preview-placeholder.md` until a real Spotify screenshot is captured.
 
+TODO: Replace `assets/preview.png` with a real YellowWave screenshot before release.
+
 ## Features
 
 - Neon yellow accent system replacing Spotify green.
