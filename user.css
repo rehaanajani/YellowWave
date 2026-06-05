@@ -54,7 +54,7 @@ body,
 
 /* Keep transitions scoped to interactive UI. A global `*` transition repaints too much of Spotify. */
 :where(button, a, [role="button"], [role="tab"], [role="menuitem"], input, textarea, select),
-:where(.main-card-card, .main-trackList-row, .main-trackList-trackListRow, .main-contextMenu-menuItemButton, .main-dropDown-dropDownItem) {
+:where(.main-card-card, .main-card-card button, .main-trackList-row, .main-trackList-trackListRow, .main-contextMenu-menuItemButton, .main-dropDown-dropDownItem) {
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
@@ -316,6 +316,7 @@ button[data-testid="control-button-playpause"]:hover {
   border: 1px solid rgba(255, 255, 255, 0.065);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
   overflow: hidden;
+  position: relative;
 }
 
 .main-card-card:hover,
@@ -330,6 +331,66 @@ button[data-testid="control-button-playpause"]:hover {
 .main-card-card:hover .main-cardHeader-link,
 .main-card-card:hover a {
   color: var(--yw-yellow-bright) !important;
+}
+
+/* Card play buttons use Spotify internals. Keep this narrow to card overlays to avoid square yellow blocks. */
+.main-card-card .main-playButton-PlayButton,
+.main-card-card .main-playPauseButton-button,
+.main-card-card button[data-testid="play-button"],
+.main-card-card button[aria-label*="Play"] {
+  position: absolute !important;
+  right: 14px;
+  bottom: 14px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: var(--yw-yellow) !important;
+  color: #050606 !important;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.96);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(241, 252, 73, 0.28);
+}
+
+.main-card-card:hover .main-playButton-PlayButton,
+.main-card-card:hover .main-playPauseButton-button,
+.main-card-card:hover button[data-testid="play-button"],
+.main-card-card:hover button[aria-label*="Play"],
+.main-card-card:focus-within .main-playButton-PlayButton,
+.main-card-card:focus-within .main-playPauseButton-button,
+.main-card-card:focus-within button[data-testid="play-button"],
+.main-card-card:focus-within button[aria-label*="Play"] {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.main-card-card .main-playButton-PlayButton:hover,
+.main-card-card .main-playPauseButton-button:hover,
+.main-card-card button[data-testid="play-button"]:hover,
+.main-card-card button[aria-label*="Play"]:hover {
+  background: var(--yw-yellow-bright) !important;
+  transform: translateY(0) scale(1.06);
+}
+
+.main-card-card .main-playButton-PlayButton svg,
+.main-card-card .main-playPauseButton-button svg,
+.main-card-card button[data-testid="play-button"] svg,
+.main-card-card button[aria-label*="Play"] svg {
+  width: 20px;
+  height: 20px;
 }
 
 .main-cardImage-imageWrapper,
@@ -400,7 +461,9 @@ button[data-testid="play-button"] {
 }
 
 .main-trackList-selected,
-[aria-selected="true"] {
+.main-trackList-row[aria-selected="true"],
+.main-trackList-trackListRow[aria-selected="true"],
+.main-trackList-trackList [role="row"][aria-selected="true"] {
   background: rgba(241, 252, 73, 0.16) !important;
 }
 
@@ -414,10 +477,7 @@ button[data-testid="play-button"] {
 /* Highlighter-label aesthetic for Daily Mix-style badges, tabs, chips, and playlist overlines. */
 .main-entityHeader-overline,
 .main-tag-container,
-.x-filterBox-filterInput,
-.main-topBar-topbarContentWrapper [role="tab"][aria-selected="true"],
-[role="tab"][aria-selected="true"],
-[data-testid="playlist-entity-title"] + div span:first-child {
+.main-topBar-topbarContentWrapper [role="tab"][aria-selected="true"] {
   background: var(--yw-yellow) !important;
   color: #050606 !important;
   border-radius: var(--yw-radius-sm);
@@ -501,7 +561,7 @@ img[data-testid="cover-art-image"] {
 
 @media (prefers-reduced-motion: reduce) {
   :where(button, a, [role="button"], [role="tab"], [role="menuitem"], input, textarea, select),
-  :where(.main-card-card, .main-trackList-row, .main-trackList-trackListRow, .main-contextMenu-menuItemButton, .main-dropDown-dropDownItem) {
+  :where(.main-card-card, .main-card-card button, .main-trackList-row, .main-trackList-trackListRow, .main-contextMenu-menuItemButton, .main-dropDown-dropDownItem) {
     animation-duration: 1ms !important;
     scroll-behavior: auto !important;
     transition-duration: 1ms !important;
