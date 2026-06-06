@@ -101,6 +101,14 @@ body::before {
   z-index: 1;
 }
 
+.main-view-container__scroll-node > div,
+.main-view-container__scroll-node-child,
+main[tabindex="-1"] {
+  background: transparent !important;
+  border: 0;
+  box-shadow: none;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--yw-yellow-dark) rgba(255, 255, 255, 0.055);
@@ -128,9 +136,6 @@ a:focus-visible,
 }
 
 /* 2. Scoped glass panels. Heavy blur is intentionally limited to these surfaces. */
-.main-view-container__scroll-node > div,
-.main-view-container__scroll-node-child,
-main[tabindex="-1"],
 .main-yourLibraryX-library,
 .main-shelf-shelf,
 .main-trackList-trackList,
@@ -147,28 +152,37 @@ main[tabindex="-1"],
   box-shadow: var(--yw-glass-shadow);
 }
 
+.yellowwave-glass-target {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.022)),
+    rgba(8, 10, 11, 0.34) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.18),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.18),
+    inset 0 0 18px rgba(241, 252, 73, 0.035),
+    0 12px 32px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(241, 252, 73, 0.08);
+}
+
 @supports ((backdrop-filter: blur(22px)) or (-webkit-backdrop-filter: blur(22px))) {
-  .main-view-container__scroll-node > div,
-  .main-view-container__scroll-node-child,
-  main[tabindex="-1"],
   .main-yourLibraryX-library,
-  .main-card-card,
   .main-shelf-shelf,
   .main-trackList-trackList,
-  .main-nowPlayingView-nowPlayingWidget,
   .main-buddyFeed-content,
-  .Root__now-playing-bar,
   .main-contextMenu-menu,
   .main-dropDown-dropDown {
     -webkit-backdrop-filter: blur(22px) saturate(145%);
     backdrop-filter: blur(22px) saturate(145%);
   }
+
+  .yellowwave-glass-target {
+    -webkit-backdrop-filter: var(--yw-glass-filter, blur(18px)) saturate(150%);
+    backdrop-filter: var(--yw-glass-filter, blur(18px)) saturate(150%);
+  }
 }
 
 @supports not ((backdrop-filter: blur(22px)) or (-webkit-backdrop-filter: blur(22px))) {
-  .main-view-container__scroll-node > div,
-  .main-view-container__scroll-node-child,
-  main[tabindex="-1"],
   .main-yourLibraryX-library,
   .main-card-card,
   .main-shelf-shelf,
@@ -638,6 +652,27 @@ button[data-testid="playlist-play-button"] {
 .main-dropDown-dropDownItem:hover {
   background: rgba(255, 255, 255, 0.06) !important;
   color: var(--yw-yellow) !important;
+}
+
+/* v0.4 glass engine output: applied by theme.js only to curated targets. */
+.yellowwave-ready .yellowwave-glass-target {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.082), rgba(255, 255, 255, 0.018)),
+    rgba(8, 10, 11, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.105);
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.18),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.18),
+    inset 0 0 22px rgba(241, 252, 73, 0.035),
+    0 12px 32px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(241, 252, 73, 0.08);
+}
+
+@supports ((backdrop-filter: blur(18px)) or (-webkit-backdrop-filter: blur(18px))) {
+  .yellowwave-ready .yellowwave-glass-target {
+    -webkit-backdrop-filter: var(--yw-glass-filter, blur(18px)) saturate(150%);
+    backdrop-filter: var(--yw-glass-filter, blur(18px)) saturate(150%);
+  }
 }
 
 ::-webkit-scrollbar {
