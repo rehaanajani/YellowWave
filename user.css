@@ -417,6 +417,7 @@ nav[aria-label="Main"] a[aria-current="page"],
 
 .view-homeShortcutsGrid-shortcut .main-playButton-PlayButton,
 .view-homeShortcutsGrid-shortcut .main-playPauseButton-button,
+.view-homeShortcutsGrid-shortcut button[data-testid="play-button"],
 .view-homeShortcutsGrid-shortcut button[aria-label*="Play"] {
   position: absolute !important;
   top: 50%;
@@ -433,6 +434,7 @@ nav[aria-label="Main"] a[aria-current="page"],
   padding: 0 !important;
   aspect-ratio: 1 / 1 !important;
   border-radius: 999px !important;
+  overflow: hidden !important;
   background: var(--yw-yellow) !important;
   color: #050606 !important;
   opacity: 0;
@@ -443,6 +445,7 @@ nav[aria-label="Main"] a[aria-current="page"],
 
 .view-homeShortcutsGrid-shortcut:hover .main-playButton-PlayButton,
 .view-homeShortcutsGrid-shortcut:hover .main-playPauseButton-button,
+.view-homeShortcutsGrid-shortcut:hover button[data-testid="play-button"],
 .view-homeShortcutsGrid-shortcut:hover button[aria-label*="Play"] {
   opacity: 1;
   visibility: visible;
@@ -451,14 +454,23 @@ nav[aria-label="Main"] a[aria-current="page"],
 
 .view-homeShortcutsGrid-shortcut .main-playButton-PlayButton:hover,
 .view-homeShortcutsGrid-shortcut .main-playPauseButton-button:hover,
+.view-homeShortcutsGrid-shortcut button[data-testid="play-button"]:hover,
 .view-homeShortcutsGrid-shortcut button[aria-label*="Play"]:hover {
   background: var(--yw-yellow-bright) !important;
   transform: translateY(-50%) scale(1.05);
 }
 
+.view-homeShortcutsGrid-shortcut .main-playButton-PlayButton *,
+.view-homeShortcutsGrid-shortcut .main-playPauseButton-button *,
+.view-homeShortcutsGrid-shortcut button[data-testid="play-button"] *,
+.view-homeShortcutsGrid-shortcut button[aria-label*="Play"] * {
+  border-radius: 999px !important;
+}
+
 /* Library row defensive reset prevents inherited button rules from making square blocks. */
 .main-yourLibraryX-listItem .main-playButton-PlayButton,
 .main-yourLibraryX-listItem .main-playPauseButton-button,
+.main-yourLibraryX-listItem button[data-testid="play-button"],
 .main-yourLibraryX-listItem button[aria-label*="Play"] {
   display: inline-flex !important;
   align-items: center;
@@ -472,6 +484,14 @@ nav[aria-label="Main"] a[aria-current="page"],
   border-radius: 999px !important;
   padding: 0 !important;
   aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+}
+
+.main-yourLibraryX-listItem .main-playButton-PlayButton *,
+.main-yourLibraryX-listItem .main-playPauseButton-button *,
+.main-yourLibraryX-listItem button[data-testid="play-button"] *,
+.main-yourLibraryX-listItem button[aria-label*="Play"] * {
+  border-radius: 999px !important;
 }
 
 /* Card play buttons: intentionally narrow so playlist cards never become yellow blocks. */
@@ -532,6 +552,31 @@ nav[aria-label="Main"] a[aria-current="page"],
 .main-card-card button[aria-label*="Play"] svg {
   width: 18px;
   height: 18px;
+}
+
+/* Final shortcut guard: this wins if Spotify mounts shortcuts with card button classes too. */
+.view-homeShortcutsGrid-shortcut .main-playButton-PlayButton,
+.view-homeShortcutsGrid-shortcut .main-playPauseButton-button,
+.view-homeShortcutsGrid-shortcut button[data-testid="play-button"],
+.view-homeShortcutsGrid-shortcut button[aria-label*="Play"] {
+  top: 50% !important;
+  right: 12px !important;
+  bottom: auto !important;
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  border-radius: 999px !important;
+  transform: translateY(-50%) scale(0.94);
+}
+
+.view-homeShortcutsGrid-shortcut:hover .main-playButton-PlayButton,
+.view-homeShortcutsGrid-shortcut:hover .main-playPauseButton-button,
+.view-homeShortcutsGrid-shortcut:hover button[data-testid="play-button"],
+.view-homeShortcutsGrid-shortcut:hover button[aria-label*="Play"] {
+  transform: translateY(-50%) scale(1);
 }
 
 .main-cardImage-imageWrapper,
