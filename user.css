@@ -306,26 +306,29 @@ nav[aria-label="Main"] a[aria-current="page"],
   box-shadow: 0 0 16px rgba(241, 252, 73, 0.3);
 }
 
-.main-playButton-PlayButton,
-.main-playPauseButton-button,
-button[data-testid="control-button-playpause"] {
+.Root__now-playing-bar .main-playButton-PlayButton,
+.Root__now-playing-bar .main-playPauseButton-button,
+.Root__now-playing-bar button[data-testid="control-button-playpause"] {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
   width: 42px !important;
   min-width: 42px !important;
+  max-width: 42px !important;
   height: 42px !important;
   min-height: 42px !important;
+  max-height: 42px !important;
   padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
   border-radius: 50% !important;
   background: var(--yw-yellow) !important;
   color: #050606 !important;
   box-shadow: 0 0 20px rgba(241, 252, 73, 0.26);
 }
 
-.main-playButton-PlayButton:hover,
-.main-playPauseButton-button:hover,
-button[data-testid="control-button-playpause"]:hover {
+.Root__now-playing-bar .main-playButton-PlayButton:hover,
+.Root__now-playing-bar .main-playPauseButton-button:hover,
+.Root__now-playing-bar button[data-testid="control-button-playpause"]:hover {
   background: var(--yw-yellow-bright) !important;
   transform: scale(1.04);
 }
@@ -373,6 +376,88 @@ button[data-testid="control-button-playpause"]:hover {
 .main-card-card:hover .main-cardHeader-link,
 .main-card-card:hover a {
   color: var(--yw-yellow-bright) !important;
+}
+
+/* Home shortcut rows are Spotify desktop internals; keep play buttons small and scoped. */
+.view-homeShortcutsGrid-shortcut {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.066), rgba(255, 255, 255, 0.022)),
+    rgba(10, 12, 13, 0.34) !important;
+  border: 1px solid rgba(255, 255, 255, 0.088);
+  border-radius: var(--yw-radius-md) !important;
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.14),
+    0 10px 26px rgba(0, 0, 0, 0.24);
+}
+
+.view-homeShortcutsGrid-shortcut:hover {
+  border-color: rgba(241, 252, 73, 0.22);
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.18),
+    0 14px 30px rgba(0, 0, 0, 0.32),
+    0 0 18px rgba(241, 252, 73, 0.1);
+  transform: translateY(-2px);
+}
+
+.view-homeShortcutsGrid-shortcut .main-playButton-PlayButton,
+.view-homeShortcutsGrid-shortcut .main-playPauseButton-button,
+.view-homeShortcutsGrid-shortcut button[aria-label*="Play"] {
+  position: absolute !important;
+  top: 50%;
+  right: 12px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 999px !important;
+  background: var(--yw-yellow) !important;
+  color: #050606 !important;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-50%) scale(0.94);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28), 0 0 16px rgba(241, 252, 73, 0.18);
+}
+
+.view-homeShortcutsGrid-shortcut:hover .main-playButton-PlayButton,
+.view-homeShortcutsGrid-shortcut:hover .main-playPauseButton-button,
+.view-homeShortcutsGrid-shortcut:hover button[aria-label*="Play"] {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) scale(1);
+}
+
+.view-homeShortcutsGrid-shortcut .main-playButton-PlayButton:hover,
+.view-homeShortcutsGrid-shortcut .main-playPauseButton-button:hover,
+.view-homeShortcutsGrid-shortcut button[aria-label*="Play"]:hover {
+  background: var(--yw-yellow-bright) !important;
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* Library row defensive reset prevents inherited button rules from making square blocks. */
+.main-yourLibraryX-listItem .main-playButton-PlayButton,
+.main-yourLibraryX-listItem .main-playPauseButton-button,
+.main-yourLibraryX-listItem button[aria-label*="Play"] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  min-height: 34px !important;
+  max-height: 34px !important;
+  border-radius: 999px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
 }
 
 /* Card play buttons: intentionally narrow so playlist cards never become yellow blocks. */
