@@ -62,3 +62,7 @@ Check Spotify desktop after each change. Keep CSS readable and avoid broad expen
 
 - YellowWave is original and does not copy Liquify code.
 - This theme does not use Spotify API, APK changes, backend services, Vercel, Supabase, or OAuth.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
